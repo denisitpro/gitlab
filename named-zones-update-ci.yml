@@ -1,0 +1,29 @@
+# example auto pull, check and reload zone
+stages:
+   - pull
+   - validate
+   - reload
+
+task1-pull:
+  stage: pull
+  script: cd /opt/gitlab/dns/ && /usr/bin/git pull
+  tags:
+    - dns
+
+task2-validate-zubr-tech:
+  stage: validate
+  script: named-checkzone -k fail example.com /var/named/master/example.com.zone
+  tags:
+    - dns
+
+task2-validate-10:
+  stage: validate
+  script: named-checkzone -k fail 10.in-addr.arpa /var/named/master/10.in-addr.arpa.zone
+  tags:
+    - dns
+
+task3-reload:
+  stage: reload
+  script: /usr/sbin/rndc reload
+  tags:
+    - dns
