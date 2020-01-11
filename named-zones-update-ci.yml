@@ -3,6 +3,7 @@ stages:
    - pull
    - validate
    - reload
+   - notify
 
 task1-pull:
   stage: pull
@@ -24,6 +25,16 @@ task2-validate-10:
 
 task3-reload:
   stage: reload
-  script: /usr/sbin/rndc reload
+  script:
+  - /usr/sbin/rndc reload
+  - sh .ci-notify.sh "✅ - success"
+  tags:
+    - dns
+
+notify_error:
+  stage: notify
+  script:
+  - sh .ci-notify.sh "❌ - failed"
+  when: on_failure #deploy fail
   tags:
     - dns
